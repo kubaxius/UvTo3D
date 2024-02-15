@@ -26,7 +26,7 @@ func _on_menu_start_pressed():
 		function = VertexUtils.get_uv_to_3d_coordinates_array.bind(mesh, $Menu.uv_map_size, $Menu.sphere_radius)
 	
 	if $Menu.use_threading:
-		thread.start(function)
+		thread.start(function, Thread.PRIORITY_HIGH)
 	else:
 		function.call()
 
