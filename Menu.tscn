@@ -1,0 +1,310 @@
+[gd_scene load_steps=5 format=3 uid="uid://py5xue3t5mrs"]
+
+[sub_resource type="GDScript" id="GDScript_ymoua"]
+script/source = "extends Control
+
+@onready var progress_bar := $VBoxContainer/ProgressBar
+
+signal toggle_rotation(value)
+signal start_pressed
+
+var uv_map_size: get = _get_uv_map_size
+var output_file_name: get = _get_output_file_name
+var sphere_mode: get = _is_sphere
+var sphere_radius: get = _get_sphere_radius
+var use_threading: get = _use_threading
+
+
+func _on_start_pressed():
+	start_pressed.emit()
+	for input in get_tree().get_nodes_in_group(\"uneditable_after_start\"):
+		if input is LineEdit:
+			input.editable = false
+		else:
+			input.disabled = true
+	
+
+
+func _on_check_box_toggled(toggled_on):
+	toggle_rotation.emit(toggled_on)
+
+
+func _get_le_contents(line_edit:LineEdit) -> String:
+	var text:String = line_edit.text
+	if text.is_empty():
+		text = line_edit.placeholder_text
+	return text
+
+
+func _get_uv_map_size() -> Vector2:
+	var text = _get_le_contents($VBoxContainer/UVSize/LineEdit)
+	
+	var regex = RegEx.new()
+	regex.compile(\"[0-9]+\")
+	
+	var size_array = []
+	for result in regex.search_all(text):
+		size_array.append(int(result.get_string()))
+	
+	return Vector2(size_array[0], size_array[1])
+
+
+func _get_output_file_name() -> String:
+	return _get_le_contents($VBoxContainer/FileName/LineEdit)
+
+
+func _is_sphere():
+	return $VBoxContainer/IsSphere/CheckBox.button_pressed
+
+
+func _get_sphere_radius():
+	return int(_get_le_contents($SphereSize/LineEdit))
+
+
+func _use_threading():
+	return $VBoxContainer/Threading/CheckBox.button_pressed
+
+
+func show_done_banner():
+	$VBoxContainer.visible = false
+	$Done.visible = true
+"
+
+[sub_resource type="GDScript" id="GDScript_8ujv5"]
+script/source = "extends Button
+
+func _pressed():
+	visible = false
+"
+
+[sub_resource type="GDScript" id="GDScript_b3gkm"]
+script/source = "extends ProgressBar
+
+
+func _on_start_pressed():
+	visible = true
+"
+
+[sub_resource type="GDScript" id="GDScript_i0k85"]
+script/source = "extends Panel
+
+func _ready():
+	visible = false
+
+func _on_check_box_toggled(toggled_on):
+	visible = toggled_on
+"
+
+[node name="Menu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_ymoua")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 55.0
+offset_top = 64.0
+offset_right = 335.0
+offset_bottom = 357.0
+
+[node name="UVSize" type="Panel" parent="VBoxContainer"]
+custom_minimum_size = Vector2(280, 95)
+layout_mode = 2
+metadata/_edit_lock_ = true
+
+[node name="LineEdit" type="LineEdit" parent="VBoxContainer/UVSize" groups=["uneditable_after_start"]]
+layout_mode = 2
+offset_left = 20.0
+offset_top = 47.0
+offset_right = 216.0
+offset_bottom = 78.0
+placeholder_text = "1024/512"
+metadata/_edit_lock_ = true
+
+[node name="Label" type="Label" parent="VBoxContainer/UVSize"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 15.0
+offset_right = 154.0
+offset_bottom = 38.0
+text = "UV Size (in pixels)"
+metadata/_edit_lock_ = true
+
+[node name="FileName" type="Panel" parent="VBoxContainer"]
+custom_minimum_size = Vector2(280, 95)
+layout_mode = 2
+metadata/_edit_lock_ = true
+
+[node name="LineEdit" type="LineEdit" parent="VBoxContainer/FileName"]
+layout_mode = 2
+offset_left = 20.0
+offset_top = 47.0
+offset_right = 216.0
+offset_bottom = 78.0
+placeholder_text = "uv_to_3d.arr"
+metadata/_edit_lock_ = true
+
+[node name="Label" type="Label" parent="VBoxContainer/FileName"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 15.0
+offset_right = 154.0
+offset_bottom = 38.0
+text = "File Name"
+metadata/_edit_lock_ = true
+
+[node name="RotateView" type="Panel" parent="VBoxContainer"]
+custom_minimum_size = Vector2(280, 60)
+layout_mode = 2
+metadata/_edit_lock_ = true
+
+[node name="CheckBox" type="CheckBox" parent="VBoxContainer/RotateView"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -140.0
+offset_top = -29.5
+offset_right = 140.0
+offset_bottom = 29.5
+grow_horizontal = 2
+grow_vertical = 2
+button_pressed = true
+text = "Rotate View
+"
+metadata/_edit_lock_ = true
+
+[node name="IsSphere" type="Panel" parent="VBoxContainer"]
+custom_minimum_size = Vector2(280, 60)
+layout_mode = 2
+metadata/_edit_lock_ = true
+
+[node name="CheckBox" type="CheckBox" parent="VBoxContainer/IsSphere" groups=["uneditable_after_start"]]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -140.0
+offset_top = -29.5
+offset_right = 140.0
+offset_bottom = 29.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "Sphere Mode
+"
+metadata/_edit_lock_ = true
+
+[node name="Threading" type="Panel" parent="VBoxContainer"]
+custom_minimum_size = Vector2(280, 60)
+layout_mode = 2
+metadata/_edit_lock_ = true
+
+[node name="CheckBox" type="CheckBox" parent="VBoxContainer/Threading" groups=["uneditable_after_start"]]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -140.0
+offset_top = -29.5
+offset_right = 140.0
+offset_bottom = 29.5
+grow_horizontal = 2
+grow_vertical = 2
+button_pressed = true
+text = "Use additional thread"
+metadata/_edit_lock_ = true
+
+[node name="Start" type="Button" parent="VBoxContainer"]
+modulate = Color(0, 1, 0, 1)
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "Start!"
+script = SubResource("GDScript_8ujv5")
+metadata/_edit_lock_ = true
+
+[node name="ProgressBar" type="ProgressBar" parent="VBoxContainer"]
+visible = false
+layout_mode = 2
+step = 0.001
+script = SubResource("GDScript_b3gkm")
+metadata/_edit_lock_ = true
+
+[node name="SphereSize" type="Panel" parent="."]
+custom_minimum_size = Vector2(280, 95)
+layout_mode = 0
+offset_left = 344.0
+offset_top = 326.0
+offset_right = 624.0
+offset_bottom = 421.0
+script = SubResource("GDScript_i0k85")
+
+[node name="LineEdit" type="LineEdit" parent="SphereSize" groups=["uneditable_after_start"]]
+layout_mode = 2
+offset_left = 20.0
+offset_top = 47.0
+offset_right = 167.0
+offset_bottom = 78.0
+placeholder_text = "1"
+alignment = 2
+
+[node name="Label" type="Label" parent="SphereSize"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 15.0
+offset_right = 154.0
+offset_bottom = 38.0
+text = "Sphere Radius (in meters)"
+metadata/_edit_lock_ = true
+
+[node name="Label2" type="Label" parent="SphereSize"]
+layout_mode = 0
+offset_left = 172.0
+offset_top = 51.0
+offset_right = 191.0
+offset_bottom = 74.0
+text = "m"
+
+[node name="Done" type="Panel" parent="."]
+visible = false
+modulate = Color(1.11182e-05, 0.798343, 1.54018e-06, 1)
+custom_minimum_size = Vector2(280, 60)
+layout_mode = 2
+offset_left = 55.0
+offset_top = 64.0
+offset_right = 335.0
+offset_bottom = 124.0
+metadata/_edit_lock_ = true
+
+[node name="Label" type="Label" parent="Done"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -23.0
+offset_top = -11.5
+offset_right = 23.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "Done!"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_lock_ = true
+
+[connection signal="toggled" from="VBoxContainer/RotateView/CheckBox" to="." method="_on_check_box_toggled"]
+[connection signal="toggled" from="VBoxContainer/IsSphere/CheckBox" to="SphereSize" method="_on_check_box_toggled"]
+[connection signal="pressed" from="VBoxContainer/Start" to="." method="_on_start_pressed"]
+[connection signal="pressed" from="VBoxContainer/Start" to="VBoxContainer/ProgressBar" method="_on_start_pressed"]

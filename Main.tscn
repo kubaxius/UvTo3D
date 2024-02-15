@@ -1,0 +1,73 @@
+[gd_scene load_steps=8 format=3 uid="uid://dympcghnijvvk"]
+
+[ext_resource type="Script" path="res://main.gd" id="1_ri8su"]
+[ext_resource type="PackedScene" uid="uid://cio2iwslsqhdl" path="res://model_here/monke.blend" id="2_sejq2"]
+[ext_resource type="PackedScene" uid="uid://py5xue3t5mrs" path="res://Menu.tscn" id="3_pb514"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_8p4l2"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_wmwlo"]
+sky_material = SubResource("ProceduralSkyMaterial_8p4l2")
+
+[sub_resource type="Environment" id="Environment_pk4e6"]
+background_mode = 2
+sky = SubResource("Sky_wmwlo")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="GDScript" id="GDScript_by6mb"]
+script/source = "extends Marker3D
+
+var do_rotate := true
+
+
+func _physics_process(_delta):
+	if do_rotate:
+		rotate(Vector3(0, 1, 0), 0.01)
+
+
+func _unhandled_input(event):
+	if event.is_action_pressed(\"camera_closer\"):
+		$Camera.position.z = $Camera.position.z - 1
+	if event.is_action_pressed(\"camera_further\"):
+		$Camera.position.z = $Camera.position.z + 1
+	$Camera.position.z = clamp($Camera.position.z, 1, 100)
+
+
+
+func _on_menu_toggle_rotation(value):
+	do_rotate = value
+"
+
+[node name="Main" type="Node3D"]
+script = ExtResource("1_ri8su")
+mesh_node = NodePath("MeshContainer/monke/Suzanne")
+
+[node name="MeshContainer" type="Node3D" parent="."]
+
+[node name="monke" parent="MeshContainer" instance=ExtResource("2_sejq2")]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_pk4e6")
+
+[node name="CameraFocus" type="Marker3D" parent="."]
+script = SubResource("GDScript_by6mb")
+
+[node name="Camera" type="Camera3D" parent="CameraFocus"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5)
+current = true
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="CameraFocus"]
+transform = Transform3D(-0.866024, -0.433016, 0.250001, 0, 0.499998, 0.866026, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Menu" parent="." instance=ExtResource("3_pb514")]
+
+[node name="DrawingBoard" type="Node3D" parent="."]
+
+[connection signal="start_pressed" from="Menu" to="." method="_on_menu_start_pressed"]
+[connection signal="toggle_rotation" from="Menu" to="CameraFocus" method="_on_menu_toggle_rotation"]
+
+[editable path="MeshContainer/monke"]
