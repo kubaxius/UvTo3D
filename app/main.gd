@@ -50,7 +50,7 @@ func _map_finished():
 	create_and_apply_noise_material()
 	# remove the green dots
 	$DrawingBoard.queue_free()
-	$Menu.show_done_banner()
+	$Menu.finished()
 	# toggle rotation back on
 	$Menu._on_check_box_toggled(true)
 

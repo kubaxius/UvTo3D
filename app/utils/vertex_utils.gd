@@ -130,6 +130,7 @@ func _uv_to_3d_step(x, y, faces):
 	if not map[x][y] is int:
 		call_thread_safe("emit_signal", "added_coordinate", map[x][y])
 
+
 # If the mesh is a sphere, then normalize all coordinates,
 # and multiply them by given radius.
 func _spherise_map(sphere_radius, uv_map_size):

@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://py5xue3t5mrs"]
+[gd_scene load_steps=6 format=3 uid="uid://py5xue3t5mrs"]
 
 [sub_resource type="GDScript" id="GDScript_ymoua"]
 script/source = "extends Control
@@ -65,7 +65,8 @@ func _use_threading():
 	return $VBoxContainer/Threading/CheckBox.button_pressed
 
 
-func show_done_banner():
+func finished():
+	$TimeElapser.stop()
 	$VBoxContainer.visible = false
 	$Done.visible = true
 "
@@ -93,6 +94,34 @@ func _ready():
 
 func _on_check_box_toggled(toggled_on):
 	visible = toggled_on
+"
+
+[sub_resource type="GDScript" id="GDScript_seg3n"]
+script/source = "extends Label
+
+var started := false
+var starting_time 
+
+
+func _process(delta):
+	if started:
+		var time = \"%.2f\" % (float(Time.get_ticks_msec() - starting_time)/1000)
+		text = \"Elapsed Time: \" + time + \" sec\"
+
+
+func start():
+	started = true
+	starting_time = Time.get_ticks_msec()
+	modulate = Color.YELLOW
+
+
+func stop():
+	started = false
+	modulate = Color.DARK_GREEN
+
+
+func _on_menu_start_pressed():
+	start()
 "
 
 [node name="Menu" type="Control"]
@@ -304,6 +333,16 @@ horizontal_alignment = 1
 vertical_alignment = 1
 metadata/_edit_lock_ = true
 
+[node name="TimeElapser" type="Label" parent="."]
+layout_mode = 0
+offset_left = 55.0
+offset_top = 31.0
+offset_right = 166.0
+offset_bottom = 54.0
+text = "Elapsed Time: "
+script = SubResource("GDScript_seg3n")
+
+[connection signal="start_pressed" from="." to="TimeElapser" method="_on_menu_start_pressed"]
 [connection signal="toggled" from="VBoxContainer/RotateView/CheckBox" to="." method="_on_check_box_toggled"]
 [connection signal="toggled" from="VBoxContainer/IsSphere/CheckBox" to="SphereSize" method="_on_check_box_toggled"]
 [connection signal="pressed" from="VBoxContainer/Start" to="." method="_on_start_pressed"]
