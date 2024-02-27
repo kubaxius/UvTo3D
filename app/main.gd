@@ -2,6 +2,7 @@ extends Node3D
 
 # Not very important, used only for visualisation.
 @export var number_of_dots = 10000
+@export_range(0.1, 1, 0.1) var dot_size = 0.01
 
 @export_node_path("MeshInstance3D") var mesh_node
 
@@ -100,4 +101,4 @@ func create_and_apply_noise_material():
 func create_image():
 	# I thought I could encode positions into this image format, but I have no idea if it's
 	# even possible from GDScript, lol
-	var image = Image.create($Menu.uv_map_size.x, $Menu.uv_map_size.y, false, Image.FORMAT_RGBF)
+	var _image = Image.create($Menu.uv_map_size.x, $Menu.uv_map_size.y, false, Image.FORMAT_RGBF)

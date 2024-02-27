@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://dympcghnijvvk"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_ri8su"]
-[ext_resource type="PackedScene" uid="uid://cio2iwslsqhdl" path="res://model_here/monke.blend" id="2_3a24h"]
+[ext_resource type="PackedScene" uid="uid://cio2iwslsqhdl" path="res://model_here/monke.blend" id="2_umei0"]
 [ext_resource type="PackedScene" uid="uid://py5xue3t5mrs" path="res://Menu.tscn" id="3_pb514"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_8p4l2"]
@@ -43,11 +43,12 @@ func _on_menu_toggle_rotation(value):
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_ri8su")
+dot_size = 0.1
 mesh_node = NodePath("MeshContainer/monke/Suzanne")
 
 [node name="MeshContainer" type="Node3D" parent="."]
 
-[node name="monke" parent="MeshContainer" instance=ExtResource("2_3a24h")]
+[node name="monke" parent="MeshContainer" instance=ExtResource("2_umei0")]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_pk4e6")

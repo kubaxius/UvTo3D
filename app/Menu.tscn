@@ -103,10 +103,14 @@ var started := false
 var starting_time 
 
 
-func _process(delta):
+func _process(_delta):
 	if started:
-		var time = \"%.2f\" % (float(Time.get_ticks_msec() - starting_time)/1000)
+		var time = get_elapsed_time()
 		text = \"Elapsed Time: \" + time + \" sec\"
+
+
+func get_elapsed_time():
+	return \"%.2f\" % (float(Time.get_ticks_msec() - starting_time)/1000)
 
 
 func start():
@@ -118,6 +122,7 @@ func start():
 func stop():
 	started = false
 	modulate = Color.DARK_GREEN
+	print(\"Elapsed Time: \" + get_elapsed_time())
 
 
 func _on_menu_start_pressed():
