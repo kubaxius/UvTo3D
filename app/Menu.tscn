@@ -69,6 +69,7 @@ func finished():
 	$TimeElapser.stop()
 	$VBoxContainer.visible = false
 	$Done.visible = true
+	$SphereSize.visible = false
 "
 
 [sub_resource type="GDScript" id="GDScript_8ujv5"]
