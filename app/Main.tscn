@@ -43,7 +43,6 @@ func _on_menu_toggle_rotation(value):
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_ri8su")
-dot_size = 0.1
 mesh_node = NodePath("MeshContainer/monke/Suzanne")
 
 [node name="MeshContainer" type="Node3D" parent="."]

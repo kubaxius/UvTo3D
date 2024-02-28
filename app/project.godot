@@ -19,7 +19,6 @@ config/icon="res://icon.svg"
 
 Utils="*res://utils/utils.gd"
 VertexUtils="*res://utils/vertex_utils.gd"
-Draw3d="*res://utils/draw3D.gd"
 
 [input]
 

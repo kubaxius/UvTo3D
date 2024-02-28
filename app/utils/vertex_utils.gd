@@ -5,7 +5,7 @@ extends Node
 
 
 signal finished_map
-signal added_coordinate(coordinate: Vector3)
+signal finished_face(face: Dictionary)
 
 
 var percent = 0
@@ -23,6 +23,7 @@ func get_uv_to_3d_coordinates_array(mesh:Mesh, uv_map_size:Vector2i, sphere_radi
 	
 	for face_id in faces.size():
 		_set_face_pixels(faces[face_id])
+		call_thread_safe("emit_signal", "finished_face", faces[face_id])
 		_set_and_print_percents(face_id, faces.size())
 	
 	if sphere_radius != 0:
@@ -101,8 +102,8 @@ func _initialize_map():
 			map[x].append(0)
 
 
-# face:
-#	vertex:
+# faces.face:
+#	verticies.vertex:
 #		location: *location of the vertex in 3D space*
 #		uv: *location of the vertex on uv plane*
 #	max_x: *highest x coordinate of triangle verticies on the UV map*

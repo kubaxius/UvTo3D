@@ -1,9 +1,5 @@
 extends Node3D
 
-# Not very important, used only for visualisation.
-@export var number_of_dots = 10000
-@export_range(0.1, 1, 0.1) var dot_size = 0.01
-
 @export_node_path("MeshInstance3D") var mesh_node
 
 @onready var mesh:Mesh = get_node(mesh_node).mesh
@@ -13,17 +9,12 @@ extends Node3D
 var map = Uv3DMap.new()
 
 
-var dot_step = 0
-
 func _ready():
-	VertexUtils.added_coordinate.connect(_coordinate_added)
+	VertexUtils.finished_face.connect(_face_finished)
 	VertexUtils.finished_map.connect(_map_finished)
 
 
 func _on_menu_start_pressed():
-	# Calculates how often to create the green dots you see during generation.
-	dot_step = int($Menu.uv_map_size.x * $Menu.uv_map_size.y / number_of_dots)
-	
 	var function: Callable
 	if $Menu.sphere_mode:
 		function = VertexUtils.get_uv_to_3d_coordinates_array.bind(mesh, $Menu.uv_map_size)
@@ -40,14 +31,8 @@ func _process(_delta):
 	$Menu.progress_bar.value = VertexUtils.percent
 
 
-## Creates the green dots you see during map generation.
-var counter = 0
-func _coordinate_added(coordinate):
-	if counter == dot_step:
-		Draw3d.point(coordinate, 0.01, Color.GREEN)
-		counter = 0
-		return null
-	counter += 1
+func _face_finished(face:Dictionary):
+	pass
 
 
 func _map_finished():
