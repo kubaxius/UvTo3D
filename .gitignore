@@ -1,2 +1,5 @@
+app/model_here/
+app/output/
+
 # Godot 4+ specific ignores
 .godot/
