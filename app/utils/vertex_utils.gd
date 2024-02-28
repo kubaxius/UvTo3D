@@ -31,6 +31,7 @@ func get_uv_to_3d_coordinates_array(mesh:Mesh, uv_map_size:Vector2i, sphere_radi
 	call_thread_safe("emit_signal", "finished_map")
 
 
+
 ## Barycentric functions ##
 
 func cart2bary(p : Vector3, a : Vector3, b : Vector3, c: Vector3) -> Vector3:
@@ -89,7 +90,6 @@ func get_distance_from_line(p:Vector2, l1:Vector2, l2:Vector2) -> float:
 	var top = abs((l2.x - l1.x) * (l1.y - p.y) - (l1.x - p.x) * (l2.y - l1.y))
 	var bot = sqrt(pow((l2.x - l1.x), 2) + pow((l2.y - l1.y), 2))
 	return top/bot
-
 
 
 ## Private methods ##

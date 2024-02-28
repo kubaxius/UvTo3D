@@ -22,7 +22,6 @@ func _on_start_pressed():
 			input.editable = false
 		else:
 			input.disabled = true
-	
 
 
 func _on_check_box_toggled(toggled_on):
@@ -36,7 +35,7 @@ func _get_le_contents(line_edit:LineEdit) -> String:
 	return text
 
 
-func _get_uv_map_size() -> Vector2:
+func _get_uv_map_size() -> Vector2i:
 	var text = _get_le_contents($VBoxContainer/UVSize/LineEdit)
 	
 	var regex = RegEx.new()
@@ -46,7 +45,7 @@ func _get_uv_map_size() -> Vector2:
 	for result in regex.search_all(text):
 		size_array.append(int(result.get_string()))
 	
-	return Vector2(size_array[0], size_array[1])
+	return Vector2i(size_array[0], size_array[1])
 
 
 func _get_output_file_name() -> String:
@@ -180,7 +179,7 @@ offset_left = 20.0
 offset_top = 47.0
 offset_right = 216.0
 offset_bottom = 78.0
-placeholder_text = "uv_to_3d.arr"
+placeholder_text = "uv_to_3d.res"
 metadata/_edit_lock_ = true
 
 [node name="Label" type="Label" parent="VBoxContainer/FileName"]
