@@ -20,6 +20,10 @@ config/icon="res://icon.svg"
 Utils="*res://utils/utils.gd"
 VertexUtils="*res://utils/vertex_utils.gd"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/draw3d/plugin.cfg")
+
 [input]
 
 camera_closer={

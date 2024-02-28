@@ -1,8 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://dympcghnijvvk"]
+[gd_scene load_steps=10 format=3 uid="uid://dympcghnijvvk"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_ri8su"]
 [ext_resource type="PackedScene" uid="uid://cio2iwslsqhdl" path="res://model_here/monke.blend" id="2_46o5g"]
 [ext_resource type="PackedScene" uid="uid://py5xue3t5mrs" path="res://Menu.tscn" id="3_pb514"]
+[ext_resource type="Script" path="res://addons/draw3d/draw_3d.gd" id="4_kt8sn"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_8p4l2"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -41,6 +42,8 @@ func _on_menu_toggle_rotation(value):
 	do_rotate = value
 "
 
+[sub_resource type="ImmediateMesh" id="ImmediateMesh_fgldv"]
+
 [node name="Main" type="Node3D"]
 script = ExtResource("1_ri8su")
 mesh_node = NodePath("MeshContainer/monke/Suzanne")
@@ -65,7 +68,10 @@ shadow_enabled = true
 
 [node name="Menu" parent="." instance=ExtResource("3_pb514")]
 
-[node name="DrawingBoard" type="Node3D" parent="."]
+[node name="Draw3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("ImmediateMesh_fgldv")
+skeleton = NodePath("")
+script = ExtResource("4_kt8sn")
 
 [connection signal="start_pressed" from="Menu" to="." method="_on_menu_start_pressed"]
 [connection signal="toggle_rotation" from="Menu" to="CameraFocus" method="_on_menu_toggle_rotation"]

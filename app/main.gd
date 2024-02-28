@@ -15,6 +15,7 @@ func _ready():
 
 
 func _on_menu_start_pressed():
+	_make_mesh_transparent()
 	var function: Callable
 	if $Menu.sphere_mode:
 		function = VertexUtils.get_uv_to_3d_coordinates_array.bind(mesh, $Menu.uv_map_size)
@@ -32,14 +33,14 @@ func _process(_delta):
 
 
 func _face_finished(face:Dictionary):
-	pass
+	$Draw3D.draw_line([face.verticies[0].location, face.verticies[1].location, face.verticies[2].location, face.verticies[0].location], Color.GREEN)
 
 
 func _map_finished():
 	save_uv_3d_map()
 	create_and_apply_noise_material()
 	# remove the green dots
-	$DrawingBoard.queue_free()
+	$Draw3D.queue_free()
 	$Menu.finished()
 	# toggle rotation back on
 	$Menu._on_check_box_toggled(true)
@@ -47,6 +48,13 @@ func _map_finished():
 
 func _exit_tree():
 	thread.wait_to_finish()
+
+
+func _make_mesh_transparent():
+	var material := StandardMaterial3D.new()
+	material.transparency = 1
+	material.albedo_color = Color(1, 1, 1, 0.75)
+	mesh.surface_set_material(0, material)
 
 
 func save_uv_3d_map():
