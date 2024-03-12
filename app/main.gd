@@ -33,7 +33,8 @@ func _process(_delta):
 
 
 func _face_finished(face:Dictionary):
-	$Draw3D.draw_line([face.verticies[0].location, face.verticies[1].location, face.verticies[2].location, face.verticies[0].location], Color.GREEN)
+	pass
+	#$Draw3D.draw_line([face.verticies[0].location, face.verticies[1].location, face.verticies[2].location, face.verticies[0].location], Color.GREEN)
 
 
 func _map_finished():
@@ -81,8 +82,8 @@ func create_and_apply_noise_material():
 	
 	for x in uv_3d.size():
 		for y in uv_3d[x].size():
-			if typeof(uv_3d[x][y]) == TYPE_VECTOR3:
-				var noise_val = noise.get_noise_3dv(uv_3d[x][y])
+			if uv_3d[x][y].is_set:
+				var noise_val = noise.get_noise_3dv(uv_3d[x][y].location_3d)
 				var color = Color(noise_val, noise_val, noise_val)
 				image.set_pixel(x, y, color)
 	

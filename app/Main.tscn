@@ -1,7 +1,7 @@
 [gd_scene load_steps=10 format=3 uid="uid://dympcghnijvvk"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_ri8su"]
-[ext_resource type="PackedScene" uid="uid://cio2iwslsqhdl" path="res://model_here/monke.blend" id="2_46o5g"]
+[ext_resource type="PackedScene" uid="uid://dedthhhfuq30k" path="res://model_here/Globe.blend" id="2_lbsqa"]
 [ext_resource type="PackedScene" uid="uid://py5xue3t5mrs" path="res://Menu.tscn" id="3_pb514"]
 [ext_resource type="Script" path="res://addons/draw3d/draw_3d.gd" id="4_kt8sn"]
 
@@ -42,15 +42,15 @@ func _on_menu_toggle_rotation(value):
 	do_rotate = value
 "
 
-[sub_resource type="ImmediateMesh" id="ImmediateMesh_fgldv"]
+[sub_resource type="ImmediateMesh" id="ImmediateMesh_yj3pn"]
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_ri8su")
-mesh_node = NodePath("MeshContainer/monke/Suzanne")
+mesh_node = NodePath("MeshContainer/Globe2/Globe")
 
 [node name="MeshContainer" type="Node3D" parent="."]
 
-[node name="monke" parent="MeshContainer" instance=ExtResource("2_46o5g")]
+[node name="Globe2" parent="MeshContainer" instance=ExtResource("2_lbsqa")]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_pk4e6")
@@ -69,11 +69,11 @@ shadow_enabled = true
 [node name="Menu" parent="." instance=ExtResource("3_pb514")]
 
 [node name="Draw3D" type="MeshInstance3D" parent="."]
-mesh = SubResource("ImmediateMesh_fgldv")
+mesh = SubResource("ImmediateMesh_yj3pn")
 skeleton = NodePath("")
 script = ExtResource("4_kt8sn")
 
 [connection signal="start_pressed" from="Menu" to="." method="_on_menu_start_pressed"]
 [connection signal="toggle_rotation" from="Menu" to="CameraFocus" method="_on_menu_toggle_rotation"]
 
-[editable path="MeshContainer/monke"]
+[editable path="MeshContainer/Globe2"]

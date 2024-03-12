@@ -7,6 +7,7 @@ extends Node
 signal finished_map
 signal finished_face(face: Dictionary)
 
+var PixelClass := Uv3DMap.Pixel
 
 var percent = 0
 var map = []
@@ -22,7 +23,7 @@ func get_uv_to_3d_coordinates_array(mesh:Mesh, uv_map_size:Vector2i, sphere_radi
 	var faces = _get_uv_triangles_array(mesh)
 	
 	for face_id in faces.size():
-		_set_face_pixels(faces[face_id])
+		_add_pixels_of_a_face_to_map(faces[face_id])
 		call_thread_safe("emit_signal", "finished_face", faces[face_id])
 		_set_and_print_percents(face_id, faces.size())
 	
@@ -99,7 +100,7 @@ func _initialize_map():
 	for x in map_size.x:
 		map.append([])
 		for y in map_size.y:
-			map[x].append(0)
+			map[x].append(PixelClass.new(Vector2i(x, y)))
 
 
 # faces.face:
@@ -150,7 +151,7 @@ func _get_uv_triangles_array(mesh:Mesh) -> Array:
 	return faces
 
 
-func _set_face_pixels(face):
+func _add_pixels_of_a_face_to_map(face):
 	var x_range = range(face.min_x, face.max_x)
 	var y_range = range(face.min_y, face.max_y)
 	
@@ -161,11 +162,11 @@ func _set_face_pixels(face):
 			
 			if _is_pixel_in_face(pixel, face):
 				var loc3d = _get_pixel_3d_location(pixel, face)
-				_set_pixel_on_map(pixel, loc3d)
+				_add_pixel_to_map(pixel, loc3d)
 				
 			elif _is_pixel_close_enough(pixel, face):
 				var loc3d = _get_pixel_3d_location(pixel, face)
-				_set_pixel_on_map(pixel, loc3d)
+				_add_pixel_to_map(pixel, loc3d)
 
 
 func _is_pixel_in_face(pixel, face):
@@ -189,13 +190,10 @@ func _get_pixel_3d_location(pixel, face) -> Vector3:
 	return location
 
 
-func _set_pixel_on_map(pixel:Vector2, loc3d:Vector3):
+func _add_pixel_to_map(pixel:Vector2, loc3d:Vector3):
 	var x = pixel.x
 	var y = pixel.y
-	if map[x][y] is Vector3:
-		map[x][y] = loc3d.lerp(map[x][y], 0.5)
-	else:
-		map[x][y] = loc3d
+	map[x][y].set_or_interpolate(loc3d)
 	
 	#call_thread_safe("emit_signal", "added_coordinate", map[x][y])
 
@@ -205,8 +203,8 @@ func _set_pixel_on_map(pixel:Vector2, loc3d:Vector3):
 func _spherise_map(sphere_radius):
 	for x in map_size.x:
 		for y in map_size.y:
-			if not map[x][y] is int:
-				map[x][y] = map[x][y].normalized() * sphere_radius
+			if map[x][y].is_set:
+				map[x][y].location_3d = map[x][y].location_3d.normalized() * sphere_radius
 
 
 func _set_and_print_percents(current, maximum):
